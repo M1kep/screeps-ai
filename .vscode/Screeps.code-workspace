@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "/Users/poutrem/Library/Application Support/Screeps/scripts/screeps.com/default"
+		}
+	],
+	"settings": {
+		"javascript.implicitProjectConfig.checkJs": true,
+		"editor.detectIndentation": false,
+		"editor.tabSize": 2,
+		"editor.insertSpaces": true
+	}
+}
