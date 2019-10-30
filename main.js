@@ -4,19 +4,30 @@ var roleUpgrader = require('./role.upgrader')
 var roleBuilder = require('./role.builder')
 var roleRepairer = require('./role.repairer')
 var roleAttacker = require('./role.attacker')
+var roleTraveler = require('./role.traveler')
+var rolePickup = require('./role.pickup')
+var telephone = require('./telephone')
+var Traveler = require('./traveler');
+global._ = require('./lodash.min')
 // var util = require('./util.shared')
 const profiler = require('./screeps-profiler')
-var minHarvesters = 4
-var minBuilders = 4
+var minHarvesters = 1
+var minBuilders = 2
 var minRepairers = 2
-var maxUpgraders = 10
+var maxUpgraders = 1
+var minPickup = 0
 var minAttacker = 1
+
+telephone.initializeTelephone()
+telephone.requestTelephone('Ratstail91', telephone.TELEPHONE_INFO)
+// console.log(telephone.getTelephone('Ratstail91', telephone.TELEPHONE_INFO))
 // var roomController = Game.getObjectById('5bbcadfb9099fc012e6383d3')
 protoSpawn.patch()
-// profiler.enable()
+profiler.enable()
 // Creep.prototype.say = (input) => {}
 module.exports.loop = function () {
   profiler.wrap(function () {
+    // console.log(JSON.stringify(telephone.getTelephone('Ratstail91', telephone.TELEPHONE_INFO)))
     for (const name in Game.creeps) {
       /**
        * @type {Creep}
@@ -44,7 +55,14 @@ module.exports.loop = function () {
 
         case 'attacker':
           roleAttacker.run(creep)
+          break;
+
+        case 'traveler':
+          roleTraveler.run(creep)
           break
+
+        case 'pickup':
+          rolePickup.run(creep)
 
         default:
           // console.log('NO ROLE: ' + creep.name)
@@ -56,19 +74,21 @@ module.exports.loop = function () {
     const builders = _.filter(Game.creeps, (creep) => creep.memory.role === 'builder')
     const repairers = _.filter(Game.creeps, (creep) => creep.memory.role === 'repairer')
     const attackers = _.filter(Game.creeps, (creep) => creep.memory.role === 'attacker')
+    const pickuppers = _.filter(Game.creeps, (creep) => creep.memory.role === 'pickup')
 
     const numberOfHarvesters = harvesters.length
     const numberOfUpgraders = upgraders.length
     const numberOfBuilders = builders.length
     const numberOfRepairers = repairers.length
     const numberOfAttackers = attackers.length
+    const numberOfPickuppers = pickuppers.length
 
     const energy = Game.spawns.Spawn1.room.energyCapacityAvailable
     let name
 
     if (numberOfHarvesters < minHarvesters) {
       name = Game.spawns.Spawn1.createCustomCreep(energy, 'harvester')
-      // console.log('name')
+      console.log('harvester!')
       if (name === ERR_NOT_ENOUGH_ENERGY) {
         name = Game.spawns.Spawn1.createCustomCreep(Game.spawns.Spawn1.room.energyAvailable, 'harvester')
       }
@@ -78,9 +98,13 @@ module.exports.loop = function () {
         working: false
       })
     } else if (numberOfRepairers < minRepairers) {
+      console.log('Rpaireere')
       name = Game.spawns.Spawn1.createCustomCreep(energy, 'repairer')
+      console.log(name)
     } else if (numberOfBuilders < minBuilders) {
       name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder')
+    } else if (numberOfPickuppers < minPickup) {
+      name = Game.spawns.Spawn1.createCustomCreep(energy, 'pickup', [MOVE, CARRY, CARRY])
     } else if (numberOfUpgraders < maxUpgraders) {
       name = Game.spawns.Spawn1.createCustomCreep(energy, 'upgrader')
     }

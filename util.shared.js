@@ -31,14 +31,14 @@ module.exports = {
       if (creepWorkTaskRes === ERR_NOT_IN_RANGE) {
         if (!creep.fatigue) {
           // TODO: null workActionParam (Builders without places to build)
-          const moveRes = creep.moveTo(workActionParam[0], { visualizePathStyle: {} })
+          const moveRes = creep.travelTo(workActionParam[0], { visualizePathStyle: {} })
           if (moveRes !== 0) {
             console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
           }
         }
       } else {
         if (!creep.fatigue) {
-          const moveRes = creep.moveTo(workActionParam[0], { visualizePathStyle: {} })
+          const moveRes = creep.travelTo(workActionParam[0], { visualizePathStyle: {} })
           if (moveRes !== 0) {
             console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
           }
@@ -52,7 +52,7 @@ module.exports = {
       // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
       if (nonWorkTaskRes === ERR_NOT_IN_RANGE) {
         if (!creep.fatigue) {
-          const moveRes = creep.moveTo(nonWorkActionTarget, { visualizePathStyle: {} })
+          const moveRes = creep.travelTo(nonWorkActionTarget, { visualizePathStyle: {} })
           if (moveRes !== 0) {
             console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
           }
