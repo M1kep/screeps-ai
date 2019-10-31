@@ -25,22 +25,11 @@ module.exports = {
     } else {
       creep.say('U_H' + creep.carry.energy)
       creep.memory.task = 'harvest'
-      // var source = creep.pos.findClosestByPath(FIND_SOURCES)
-      var source
-
-      const tombStone = creep.pos.findClosestByPath(FIND_RUINS, {
-        filter: (r) => r.store.energy !== 0
-      })
-      if (tombStone) {
-        source = tombStone
-        const creepWithdraw = creep.withdraw(tombStone, RESOURCE_ENERGY)
-        if (creepWithdraw === ERR_NOT_IN_RANGE && !creep.fatigue) {
-          creep.travelTo(tombStone)
-        }
-      } else {
-        source = Game.spawns.Spawn1.room.storage
-        console.log('Test - ' + creep + " " + source)
-        const creepHarvest = creep.withdraw(source, RESOURCE_ENERGY)
+      const storage = Game.spawns.Spawn1.room.storage
+      // const storage = false
+      if (!storage) {
+        const source = creep.pos.findClosestByPath(FIND_SOURCES)
+        const creepHarvest = creep.harvest(source)
         // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
         if (creepHarvest === ERR_NOT_IN_RANGE) {
           if (!creep.fatigue) {
@@ -50,7 +39,43 @@ module.exports = {
             }
           }
         }
+      } else {
+        const creepWithdraw = creep.withdraw(storage, RESOURCE_ENERGY)
+        // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
+        if (creepWithdraw === ERR_NOT_IN_RANGE) {
+          if (!creep.fatigue) {
+            const moveRes = creep.travelTo(storage, { visualizePathStyle: {} })
+            if (moveRes !== 0) {
+              console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
+            }
+          }
+        }
       }
+      // // var source = creep.pos.findClosestByPath(FIND_SOURCES)
+      // var source
+
+      // const tombStone = creep.pos.findClosestByPath(FIND_RUINS, {
+      //   filter: (r) => r.store.energy !== 0
+      // })
+      // if (tombStone) {
+      //   source = tombStone
+      //   const creepWithdraw = creep.withdraw(tombStone, RESOURCE_ENERGY)
+      //   if (creepWithdraw === ERR_NOT_IN_RANGE && !creep.fatigue) {
+      //     creep.travelTo(tombStone)
+      //   }
+      // } else {
+      //   source = Game.spawns.Spawn1.room.storage
+      //   const creepHarvest = creep.withdraw(source, RESOURCE_ENERGY)
+      //   // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
+      //   if (creepHarvest === ERR_NOT_IN_RANGE) {
+      //     if (!creep.fatigue) {
+      //       const moveRes = creep.travelTo(source, { visualizePathStyle: {} })
+      //       if (moveRes !== 0) {
+      //         console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
+      //       }
+      //     }
+      //   }
+      // }
     }
   }
 }

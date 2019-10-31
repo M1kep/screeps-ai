@@ -3,25 +3,41 @@ module.exports = {
    * @this StructureSpawn
    */
   patch: function () {
-    StructureSpawn.prototype.createCustomCreep = function (energy, role, parts) {
-      if(parts === undefined) {
+    StructureSpawn.prototype.createCustomCreep = function (energy, role, parts, partsCost, memory) {
+      if (parts === undefined) {
         parts = [WORK, CARRY, MOVE]
       }
-      const numParts = Math.floor(energy / 200)
-      var body = []
-
-      if(numParts === 1) {
-          body.push(MOVE)
+      if (partsCost === undefined) {
+        partsCost = 200
       }
 
-      for(let i = 0; i < 3; i++) {
-        for(let j = 0; j < numParts; j++) {
+      if (memory === undefined) {
+        memory = {
+          role: role,
+          working: false
+        }
+      }
+
+      const numParts = Math.floor(energy / partsCost)
+      var body = []
+
+      if (numParts === 1) {
+        body.push(MOVE)
+      }
+
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < numParts; j++) {
           body.push(parts[i])
         }
       }
-      return this.createCreep(body, undefined, {
-        role: role,
-        working: false
+      return this.createCreep(body, undefined, memory)
+    }
+
+    StructureSpawn.prototype.createMiner = function (sourceId, containerId) {
+      return this.createCreep([WORK, WORK, WORK, WORK, WORK, MOVE], undefined, {
+        role: 'miner',
+        sourceId: sourceId,
+        containerId: containerId
       })
     }
   }

@@ -5,7 +5,7 @@ module.exports = {
    *
    * @param {Creep} creep
    */
-  run(creep) {
+  run: function (creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -17,7 +17,7 @@ module.exports = {
       const structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (s) => s.hits < s.hitsMax && s.hits < 750000 // && s.structureType !== STRUCTURE_WALL
       })
-      console.log(structure)
+      // console.log(structure)
       if (structure !== null) {
         // console.log('Defined - ' + structure)
         const creepRepair = creep.repair(structure)
@@ -55,21 +55,6 @@ module.exports = {
           }
         }
       }
-      // if(!source) {
-      //   source = creep.pos.findClosestByPath(FIND_SOURCES)
-      // }
-
-      // const tombStone = creep.pos.findClosestByPath(FIND_RUINS, {
-      //   filter: (r) => r.store.energy !== 0
-      // })
-      // if (tombStone) {
-      //   source = tombStone
-      //   const creepWithdraw = creep.withdraw(tombStone, RESOURCE_ENERGY)
-      //   if (creepWithdraw === ERR_NOT_IN_RANGE && !creep.fatigue) {
-      //     creep.travelTo(tombStone)
-      //   }
-      // } else {
-
     }
   }
 }
