@@ -1,32 +1,33 @@
-var protoSpawn = require('./prototype.spawn')
-var roleHarvester = require('./role.harvester')
-var roleUpgrader = require('./role.upgrader')
-var roleBuilder = require('./role.builder')
-var roleRepairer = require('./role.repairer')
-var roleAttacker = require('./role.attacker')
-var roleTraveler = require('./role.traveler')
-var rolePickup = require('./role.pickup')
-var roleMiner = require('./role.miner')
-var roleHauler = require('./role.hauler')
+require('./prototype.spawn')
+require('./prototype.tower')
+const roleHarvester = require('./role.harvester')
+const roleUpgrader = require('./role.upgrader')
+const roleBuilder = require('./role.builder')
+const roleRepairer = require('./role.repairer')
+const roleAttacker = require('./role.attacker')
+const roleTraveler = require('./role.traveler')
+const rolePickup = require('./role.pickup')
+const roleMiner = require('./role.miner')
+const roleHauler = require('./role.hauler')
 
-var telephone = require('./telephone')
-var Traveler = require('./traveler')
+const telephone = require('./telephone')
+// eslint-disable-next-line no-unused-vars
+const Traveler = require('./traveler')
 global._ = require('./lodash.min')
 // var util = require('./util.shared')
 const profiler = require('./screeps-profiler')
-var minHarvesters = 1
-var minBuilders = 2
-var minRepairers = 2
-var maxUpgraders = 1
-var minPickup = 0
-var minAttacker = 1
-var minHaulers = 0
+const minHarvesters = 1
+const minBuilders = 2
+const minRepairers = 2
+const maxUpgraders = 1
+const minPickup = 0
+const minAttacker = 1
 
 telephone.initializeTelephone()
 telephone.requestTelephone('Ratstail91', telephone.TELEPHONE_INFO)
 // console.log(telephone.getTelephone('Ratstail91', telephone.TELEPHONE_INFO))
 // var roomController = Game.getObjectById('5bbcadfb9099fc012e6383d3')
-protoSpawn.patch()
+// protoSpawn.patch()
 profiler.enable()
 // Creep.prototype.say = (input) => {}
 module.exports.loop = function () {
@@ -82,33 +83,46 @@ module.exports.loop = function () {
           break
       }
     }
-    const myCreeps = _.groupBy(Game.creeps, (creep) => creep.memory.role)
-    // const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role === 'harvester')
-    // const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role === 'upgrader')
-    // const builders = _.filter(Game.creeps, (creep) => creep.memory.role === 'builder')
-    // const repairers = _.filter(Game.creeps, (creep) => creep.memory.role === 'repairer')
-    // const attackers = _.filter(Game.creeps, (creep) => creep.memory.role === 'attacker')
-    // const pickuppers = _.filter(Game.creeps, (creep) => creep.memory.role === 'pickup')
-    // // const miners = _.filter(Game.creeps, (creep) => creep.memory.role === 'miner')
-    // const haulers = _.filter(Game.creeps, (creep) => creep.memory.role === 'hauler')
 
-    const numberOfHarvesters = myCreeps.harvester ? myCreeps.harvester.length : 0
-    const numberOfUpgraders = myCreeps.upgrader ? myCreeps.upgrader.length : 0
-    const numberOfBuilders = myCreeps.builder ? myCreeps.builder.length : 0
-    const numberOfRepairers = myCreeps.repairer ? myCreeps.repairer.length : 0
-    const numberOfAttackers = myCreeps.attacker ? myCreeps.attacker.length : 0
-    const numberOfPickuppers = myCreeps.pickupper ? myCreeps.pickupper.length : 0
-    const numberOfHaulers = myCreeps.hauler ? myCreeps.hauler.length : 0
+    // find all towers
+    /**
+     * @type {StructureTower[]}
+     */
+    const towers = _.filter(Game.structures, s => s.structureType === STRUCTURE_TOWER);
+    // for each tower
+    for (/** @type {StructureTower} */const tower of towers) {
+      // run tower logic
+      tower.defend()
+    }
+
+    /**
+     * @type {Creep[][]}
+     */
+    const myCreeps = _.groupBy(Game.creeps, (creep) => creep.memory.role)
+
+    // eslint-disable-next-line dot-notation
+    const numberOfHarvesters = myCreeps['harvester'] ? myCreeps['harvester'].length : 0
+    // eslint-disable-next-line dot-notation
+    const numberOfUpgraders = myCreeps['upgrader'] ? myCreeps['upgrader'].length : 0
+    // eslint-disable-next-line dot-notation
+    const numberOfBuilders = myCreeps['builder'] ? myCreeps['builder'].length : 0
+    // eslint-disable-next-line dot-notation
+    const numberOfRepairers = myCreeps['repairer'] ? myCreeps['repairer'].length : 0
+    // eslint-disable-next-line dot-notation
+    const numberOfAttackers = myCreeps['attacker'] ? myCreeps['attacker'].length : 0
+    // eslint-disable-next-line dot-notation
+    const numberOfPickuppers = myCreeps['pickupper'] ? myCreeps['pickupper'].length : 0
 
     const energy = Game.spawns.Spawn1.room.energyCapacityAvailable
     let name
 
     /**
-     * @type {Structure}
+     * @type {Source[]}
      */
     const sources = Game.spawns.Spawn1.room.find(FIND_SOURCES)
+    // Get sources and determine if a miner needs to spawn.
     for (const source of sources) {
-      // If ther are not creeps assigned to source already
+      // If there are not creeps assigned to source already
       if (!_.some(Game.creeps, c => c.memory.role === 'miner' && c.memory.sourceId === source.id)) {
         // Verify that there is a container for them.
         const containers = source.pos.findInRange(FIND_STRUCTURES, 1, {
@@ -122,12 +136,18 @@ module.exports.loop = function () {
       }
     }
 
+    /**
+     * @type {StructureContainer[]}
+     */
     const containers = Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {
       filter: s => s.structureType === STRUCTURE_CONTAINER
     })
-
-    for (const aContainer of containers) {
-      const assignedCreep = _.filter(myCreeps.hauler, (c) => c.memory.containerId === aContainer.id)
+    for (const /** @type {StructureContainer} */ aContainer of containers) {
+      /**
+       * @type {Creep[]}
+       */
+      // eslint-disable-next-line dot-notation
+      const assignedCreep = _.filter(myCreeps['hauler'], (c) => c.memory.containerId === aContainer.id)
       if (assignedCreep.length === 0) {
         name = Game.spawns.Spawn1.createCustomCreep(energy, 'hauler', [CARRY, CARRY, MOVE], undefined, {
           role: 'hauler',
@@ -140,7 +160,7 @@ module.exports.loop = function () {
 
     if (name === undefined) {
       if (numberOfHarvesters < minHarvesters) {
-        name = Game.spawns.Spawn1.createCustomCreep(1000, 'harvester')
+        name = Game.spawns.Spawn1.createCustomCreep(energy, 'harvester')
         if (name === ERR_NOT_ENOUGH_ENERGY) {
           name = Game.spawns.Spawn1.createCustomCreep(Game.spawns.Spawn1.room.energyAvailable, 'harvester')
         }
@@ -150,14 +170,14 @@ module.exports.loop = function () {
           working: false
         })
       } else if (numberOfRepairers < minRepairers) {
-        name = Game.spawns.Spawn1.createCustomCreep(500, 'repairer')
+        name = Game.spawns.Spawn1.createCustomCreep(energy, 'repairer')
         // console.log(name)
       } else if (numberOfBuilders < minBuilders) {
-        name = Game.spawns.Spawn1.createCustomCreep(500, 'builder')
+        name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder')
       } else if (numberOfPickuppers < minPickup) {
-        name = Game.spawns.Spawn1.createCustomCreep(500, 'pickup', [MOVE, CARRY, CARRY])
+        name = Game.spawns.Spawn1.createCustomCreep(energy, 'pickup', [MOVE, CARRY, CARRY])
       } else if (numberOfUpgraders < maxUpgraders) {
-        name = Game.spawns.Spawn1.createCustomCreep(1000, 'upgrader')
+        name = Game.spawns.Spawn1.createCustomCreep(energy, 'upgrader')
       }
     }
 

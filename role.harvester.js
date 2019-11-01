@@ -15,8 +15,9 @@ module.exports = {
       // Get Spawn and extensions that need power
       let structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
         filter: (s) => (s.structureType === STRUCTURE_SPAWN ||
-          s.structureType === STRUCTURE_EXTENSION) &&
-          s.energy < s.energyCapacity
+                        s.structureType === STRUCTURE_EXTENSION ||
+                        s.structureType === STRUCTURE_TOWER) &&
+                        s.energy < s.energyCapacity
       })
 
       // If there are no spawns or extensions that require then give energy to storage if
