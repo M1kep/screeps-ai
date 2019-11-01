@@ -20,7 +20,7 @@ const minHarvesters = 1
 const minBuilders = 2
 const minRepairers = 2
 const maxUpgraders = 1
-const minPickup = 0
+const minPickup = 2
 const minAttacker = 1
 
 telephone.initializeTelephone()
@@ -66,7 +66,7 @@ module.exports.loop = function () {
           roleTraveler.run(creep)
           break
 
-        case 'pickup':
+        case 'pickupper':
           rolePickup.run(creep)
           break
 
@@ -88,7 +88,7 @@ module.exports.loop = function () {
     /**
      * @type {StructureTower[]}
      */
-    const towers = _.filter(Game.structures, s => s.structureType === STRUCTURE_TOWER);
+    const towers = _.filter(Game.structures, s => s.structureType === STRUCTURE_TOWER)
     // for each tower
     for (/** @type {StructureTower} */const tower of towers) {
       // run tower logic
@@ -146,10 +146,10 @@ module.exports.loop = function () {
       /**
        * @type {Creep[]}
        */
-      // eslint-disable-next-line dot-notation
+        // eslint-disable-next-line dot-notation
       const assignedCreep = _.filter(myCreeps['hauler'], (c) => c.memory.containerId === aContainer.id)
       if (assignedCreep.length === 0) {
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'hauler', [CARRY, CARRY, MOVE], undefined, {
+        name = Game.spawns.Spawn1.createCustomCreep(1300, 'hauler', [CARRY, CARRY, MOVE], {
           role: 'hauler',
           working: false,
           containerId: aContainer.id
@@ -157,32 +157,96 @@ module.exports.loop = function () {
         break
       }
     }
-
     if (name === undefined) {
-      if (numberOfHarvesters < minHarvesters) {
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'harvester')
-        if (name === ERR_NOT_ENOUGH_ENERGY) {
-          name = Game.spawns.Spawn1.createCustomCreep(Game.spawns.Spawn1.room.energyAvailable, 'harvester')
-        }
-      } else if (numberOfAttackers < minAttacker) {
-        name = Game.spawns.Spawn1.createCreep([ATTACK, MOVE, ATTACK, MOVE], undefined, {
-          role: 'attacker',
-          working: false
-        })
-      } else if (numberOfRepairers < minRepairers) {
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'repairer')
-        // console.log(name)
-      } else if (numberOfBuilders < minBuilders) {
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder')
-      } else if (numberOfPickuppers < minPickup) {
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'pickup', [MOVE, CARRY, CARRY])
-      } else if (numberOfUpgraders < maxUpgraders) {
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'upgrader')
+      switch (true) {
+        case numberOfHarvesters < minHarvesters:
+          name = Game.spawns.Spawn1.createCustomCreep(energy, 'harvester', undefined, { home: Game.spawns.Spawn1.room.name })
+          if (name === ERR_NOT_ENOUGH_ENERGY) {
+            name = Game.spawns.Spawn1.createCustomCreep(Game.spawns.Spawn1.room.energyAvailable, 'harvester', undefined, { home: Game.spawns.Spawn1.room.name })
+          }
+          break
+
+        case numberOfAttackers < minAttacker:
+          name = Game.spawns.Spawn1.createCreep([ATTACK, MOVE, ATTACK, MOVE], undefined, {
+            role: 'attacker',
+            working: false
+          })
+          break
+
+        case numberOfRepairers < minRepairers:
+          name = Game.spawns.Spawn1.createCustomCreep(1300, 'repairer')
+          break
+
+        case numberOfBuilders < minBuilders:
+          name = Game.spawns.Spawn1.createCustomCreep(1300, 'builder')
+          break
+
+        // FALL THROUGH IF NO FLAGS!
+        // case numberOfPickuppers < minPickup:
+        //   /**
+        //    * @type {Flag[]}
+        //    */
+        //   const pickupFlags = _.filter(Game.flags, (flag) => flag.name === 'pickup')
+        //   if (pickupFlags.length !== 0) {
+        //     name = Game.spawns.Spawn1.createCustomCreep(1300, 'pickupper', [MOVE, CARRY], { targetRoom: pickupFlags[0].pos.roomName })
+        //     break
+        //   }
+
+        case numberOfUpgraders < maxUpgraders:
+          name = Game.spawns.Spawn1.createCustomCreep(1300, 'upgrader')
+          break
       }
     }
+    //   if (numberOfHarvesters < minHarvesters) {
+    //     name = Game.spawns.Spawn1.createCustomCreep(energy, 'harvester', undefined, { home: Game.spawns.Spawn1.room.name })
+    //     if (name === ERR_NOT_ENOUGH_ENERGY) {
+    //       name = Game.spawns.Spawn1.createCustomCreep(Game.spawns.Spawn1.room.energyAvailable, 'harvester', undefined, { home: Game.spawns.Spawn1.room.name })
+    //     }
+    //   } else if (numberOfAttackers < minAttacker) {
+    //     name = Game.spawns.Spawn1.createCreep([ATTACK, MOVE, ATTACK, MOVE], undefined, {
+    //       role: 'attacker',
+    //       working: false
+    //     })
+    //   } else if (numberOfRepairers < minRepairers) {
+    //     name = Game.spawns.Spawn1.createCustomCreep(energy, 'repairer')
+    //     // console.log(name)
+    //   } else if (numberOfBuilders < minBuilders) {
+    //     name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder')
+    //   } else if (numberOfUpgraders < maxUpgraders) {
+    //     name = Game.spawns.Spawn1.createCustomCreep(energy, 'upgrader')
+    //   }
+    // }
 
     if (_.isString(name)) {
       console.log('Spawned new ' + Game.creeps[name].memory.role + ' creep: ' + name)
     }
+
+    if (!Memory.stats) {
+      Memory.stats = {}
+    }
+
+    Memory.stats['cpu.getUsed'] = Game.cpu.getUsed()
+    Memory.stats['cpu.limit'] = Game.cpu.limit
+    Memory.stats['cpu.bucket'] = Game.cpu.bucket
+
+    Memory.stats['gcl.progress'] = Game.gcl.progress
+    Memory.stats['gcl.progressTotal'] = Game.gcl.progressTotal
+    Memory.stats['gcl.level'] = Game.gcl.level
+    _.forEach(Object.keys(Game.rooms), function(roomName){
+      let room = Game.rooms[roomName]
+
+      if(room.controller && room.controller.my){
+        Memory.stats['rooms.' + roomName + '.rcl.level'] = room.controller.level
+        Memory.stats['rooms.' + roomName + '.rcl.progress'] = room.controller.progress
+        Memory.stats['rooms.' + roomName + '.rcl.progressTotal'] = room.controller.progressTotal
+
+        Memory.stats['rooms.' + roomName + '.spawn.energy'] = room.energyAvailable
+        Memory.stats['rooms.' + roomName + '.spawn.energyTotal'] = room.energyCapacityAvailable
+
+        if(room.storage){
+          Memory.stats['rooms.' + roomName + '.storage.energy'] = room.storage.store.energy
+        }
+      }
+    })
   })
 }

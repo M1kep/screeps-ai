@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="creeps.d.ts" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/myTypes/creeps.d.ts" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/myTypes/creeps.d.ts" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>
