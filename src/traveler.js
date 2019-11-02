@@ -1,5 +1,5 @@
 /**
- * To start using Traveler, require it in main.js:
+ * To start using Traveler, require it in main.ts:
  * Example: var Traveler = require('Traveler.js');
  */
 "use strict";

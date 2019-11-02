@@ -11,12 +11,12 @@ StructureSpawn.prototype.createCustomCreep = function (energy, role, parts, memo
     parts = [WORK, CARRY, MOVE]
   }
   const numParts = parts.length
-  let partsCost = this.getSpawnCost(parts)
+  const partsCost = this.getSpawnCost(parts)
 
   memory = { ...{ role: role, working: false, homeRoom: this.name }, ...memory }
 
   const totalParts = Math.floor(energy / partsCost)
-  let body = []
+  const body = []
 
   if (totalParts === 1) {
     body.push(MOVE)
@@ -76,9 +76,8 @@ StructureSpawn.prototype.createLongDistanceHarvester = function (energy, numberO
  *
  * @param {BodyPartConstant[]} parts
  */
-StructureSpawn.prototype.getSpawnCost = function(parts) {
+StructureSpawn.prototype.getSpawnCost = function (parts) {
   let partsCost = 0
   parts.forEach((part) => partsCost += BODYPART_COST[part])
   return partsCost
 }
-
