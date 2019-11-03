@@ -84,7 +84,7 @@ export class RoleManager {
       creep.say('H_H' + creep.carry.energy)
       const storage = Game.spawns.Spawn1.room.storage
       // If there is no storage fall back to harvesting sources
-      if (!storage) {
+      if (!storage || storage.store['energy'] === 0) {
         const source: Source | null = creep.pos.findClosestByPath(FIND_SOURCES)
         if (source !== null) {
           const creepHarvest = creep.harvest(source)
@@ -164,7 +164,7 @@ export class RoleManager {
       creep.say('B_H' + creep.carry.energy)
       const storage = Game.spawns.Spawn1.room.storage
       // If there isn't storage then withdraw from sources
-      if (!storage) {
+      if (!storage || storage.store['energy'] === 0) {
         const source: Source | null = creep.pos.findClosestByPath(FIND_SOURCES)
         if (source !== null) {
           const creepHarvest = creep.harvest(source)
@@ -300,7 +300,7 @@ export class RoleManager {
       creep.memory.task = 'harvest'
       creep.say('R_H' + creep.carry.energy)
       const storage = Game.spawns.Spawn1.room.storage
-      if (!storage) {
+      if (!storage || storage.store['energy'] === 0) {
         const source: Source | null = creep.pos.findClosestByPath(FIND_SOURCES)
         if (source !== null) {
           const creepHarvest = creep.harvest(source)

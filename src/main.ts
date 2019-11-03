@@ -1,14 +1,14 @@
 import './utils/Traveler/Traveler'
 import * as Profiler from './utils/Profiler/Profiler'
 // import { ErrorMapper } from './utils/ErrorMapper'
-import { TowerHelper } from './Helpers/TowerHelper'
-import { SpawnHelper } from './Helpers/SpawnHelper'
-import { RoleManager } from './Managers/RoleManager'
+import {TowerHelper} from './Helpers/TowerHelper'
+import {SpawnHelper} from './Helpers/SpawnHelper'
+import {RoleManager} from './Managers/RoleManager'
 
 const minHarvesters = 1
 const minBuilders = 2
 const minRepairers = 2
-const maxUpgraders = 1
+const maxUpgraders = 2
 // const minPickup = 2
 const minAttacker = 1
 
@@ -104,9 +104,7 @@ export const loop = () => {
   const energy = Game.spawns.Spawn1.room.energyCapacityAvailable
   let name
   const spawn: StructureSpawn = Game.spawns.Spawn1
-  /**
-   * @type {Source[]}
-   */
+
   const sources = spawn.room.find(FIND_SOURCES)
   // Get sources and determine if a miner needs to spawn.
   for (const source of sources) {
@@ -119,21 +117,20 @@ export const loop = () => {
 
       if (containers.length > 0) {
         name = SpawnHelper.createMiner(spawn, source.id, containers[0].id)
-        break
+        if (name === ERR_NOT_ENOUGH_ENERGY) {
+          name = undefined
+        } else {
+          break
+        }
       }
     }
   }
 
-  /**
-   * @type {StructureContainer[]}
-   */
   const containers = Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {
     filter: s => s.structureType === STRUCTURE_CONTAINER
-  })
-  for (const /** @type {StructureContainer} */ aContainer of containers) {
-    /**
-     * @type {Creep[]}
-     */
+  }) as StructureContainer[]
+
+  for (const aContainer of containers) {
     // eslint-disable-next-line dot-notation
     const assignedCreep = _.filter(myCreeps['hauler'], (c) => c.memory.containerId === aContainer.id)
     if (assignedCreep.length === 0) {
@@ -142,15 +139,20 @@ export const loop = () => {
         working: false,
         containerId: aContainer.id
       })
+      if (name === ERR_NOT_ENOUGH_ENERGY) {
+        name = undefined
+      } else {
+        break
+      }
       break
     }
   }
   if (name === undefined) {
     switch (true) {
       case numberOfHarvesters < minHarvesters:
-        name = SpawnHelper.createCustomCreep(spawn, energy, 'harvester', undefined, { homeRoom: spawn.room.name })
+        name = SpawnHelper.createCustomCreep(spawn, energy, 'harvester', undefined, {homeRoom: spawn.room.name})
         if (name === ERR_NOT_ENOUGH_ENERGY) {
-          name = SpawnHelper.createCustomCreep(spawn, spawn.room.energyAvailable, 'harvester', undefined, { homeRoom: Game.spawns.Spawn1.room.name })
+          name = SpawnHelper.createCustomCreep(spawn, spawn.room.energyAvailable, 'harvester', undefined, {homeRoom: Game.spawns.Spawn1.room.name})
         }
         break
 
@@ -169,17 +171,16 @@ export const loop = () => {
         name = SpawnHelper.createCustomCreep(spawn, 1300, 'builder')
         break
 
-        // FALL THROUGH IF NO FLAGS!
-        // case numberOfPickuppers < minPickup:
-        //   /**
-        //    * @type {Flag[]}
-        //    */
-        //   const pickupFlags = _.filter(Game.flags, (flag) => flag.name === 'pickup')
-        //   if (pickupFlags.length !== 0) {
-        //     name = Game.spawns.Spawn1.createCustomCreep(1300, 'pickupper', [MOVE, CARRY], { targetRoom: pickupFlags[0].pos.roomName })
-        //     break
-        //   }
-
+      // FALL THROUGH IF NO FLAGS!
+      // case numberOfPickuppers < minPickup:
+      //   /**
+      //    * @type {Flag[]}
+      //    */
+      //   const pickupFlags = _.filter(Game.flags, (flag) => flag.name === 'pickup')
+      //   if (pickupFlags.length !== 0) {
+      //     name = Game.spawns.Spawn1.createCustomCreep(1300, 'pickupper', [MOVE, CARRY], { targetRoom: pickupFlags[0].pos.roomName })
+      //     break
+      //   }
       case numberOfUpgraders < maxUpgraders:
         name = SpawnHelper.createCustomCreep(spawn, 1300, 'upgrader')
         break

@@ -36,6 +36,7 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-nodent": "^0.2.2",
     "rollup-plugin-screeps": "^0.1.2",
+    "rollup-plugin-strip": "^1.2.2",
     "rollup-plugin-typescript2": "^0.16.1",
     "screeps-server-mockup": "^1.4.3",
     "sinon": "^6.3.5",

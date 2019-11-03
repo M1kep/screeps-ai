@@ -5,6 +5,7 @@ import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import typescript from 'rollup-plugin-typescript2'
 import screeps from 'rollup-plugin-screeps'
+import strip from 'rollup-plugin-strip'
 
 let cfg
 const dest = process.env.DEST
@@ -16,15 +17,30 @@ if (!dest) {
 
 export default {
   input: 'src/main.ts',
-  output: {
+  output: [{
     file: 'dist/main.js',
     format: 'cjs',
     sourcemap: true,
     intro: 'const __PROFILER_ENABLED__ = true'
-  },
-
+  }],
   plugins: [
     clear({ targets: ['dist'] }),
+    strip({
+      // set this to `false` if you don't want to
+      // remove debugger statements
+      debugger: true,
+
+      // defaults to `[ 'console.*', 'assert.*' ]`
+      functions: ['console.log', 'assert.*', 'debug', 'alert'],
+
+      // remove one or more labeled blocks by name
+      // defaults to `[]`
+      labels: ['unittest'],
+
+      // set this to `false` if you're not using sourcemaps –
+      // defaults to `true`
+      sourceMap: true
+    }),
     resolve(),
     commonjs(),
     typescript({ tsconfig: './tsconfig.json' }),
