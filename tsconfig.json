@@ -2,8 +2,7 @@
   "compilerOptions": {
     "module": "esnext",
     "lib": [
-      "esnext",
-      "dom"
+      "esnext"
     ],
     "target": "es2017",
     "moduleResolution": "Node",
@@ -11,6 +10,8 @@
     "baseUrl": "src/",
     "sourceMap": true,
     "strict": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
     "experimentalDecorators": true,
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,

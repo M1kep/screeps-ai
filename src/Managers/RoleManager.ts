@@ -1,8 +1,64 @@
 import { profile } from '../utils/Profiler/Profiler'
+import { CreepHelper } from '../Helpers/CreepHelper'
+import {RoleHelper} from "../Helpers/RoleHelper";
+import {RECIEVED_ENERGY} from "../utils/Internal/Constants";
 
 @profile
 export class RoleManager {
-  public static runMiner (creep: Creep) {
+  public static handleRoles () {
+    for (const name in Game.creeps) {
+      const creep = Game.creeps[name]
+      if(creep.spawning) {
+        continue
+      }
+      switch (creep.memory.role) {
+        case 'harvester':
+          // util.baseRun(creep, creep.transfer, [Game.spawns.spawn_1, RESOURCE_ENERGY], creep.harvest, creep.pos.findClosestByPath(FIND_SOURCES))
+          this.runHarvester(creep)
+          break
+
+        case 'upgrader':
+          // util.baseRun(creep, creep.upgradeController, [roomController], creep.harvest, creep.pos.findClosestByPath(FIND_SOURCES))
+          this.runUpgrader(creep)
+          break
+
+        case 'builder':
+          // util.baseRun(creep, creep.build, [creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)], creep.harvest, creep.pos.findClosestByPath(FIND_SOURCES))
+          this.runBuilder(creep)
+          break
+
+        case 'repairer':
+          this.runRepairer(creep)
+          break
+
+        case 'attacker':
+          this.runAttacker(creep)
+          break
+
+        case 'traveler':
+          this.runTraveller(creep)
+          break
+
+        case 'pickupper':
+          this.runPickupper(creep)
+          break
+
+        case 'miner':
+          this.runMiner(creep)
+          break
+
+        case 'hauler':
+          this.runHauler(creep)
+          break
+
+        default:
+          console.log('NO ROLE: ' + creep.name)
+          break
+      }
+    }
+  }
+
+  private static runMiner (creep: Creep) {
     if (!creep.spawning) {
       /**
        * @type {Source}
@@ -39,83 +95,24 @@ export class RoleManager {
     }
   }
 
-  public static runHarvester (creep: Creep) {
+  private static runHarvester (creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
       creep.memory.working = true
     }
     if (creep.memory.working === true) {
-      creep.memory.task = 'transfer'
-      creep.say('H_T' + creep.carry.energy)
-      // Get Spawn and extensions that need power
-      const structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-        filter: (s) => (s.structureType === STRUCTURE_SPAWN ||
-          s.structureType === STRUCTURE_EXTENSION ||
-          s.structureType === STRUCTURE_TOWER) &&
-          s.energy < s.energyCapacity
-      }) as StructureSpawn | StructureExtension | StructureTower | null
-
-      // If there are no spawns or extensions that require then give energy to storage if
-      // the energy did not come from storage
-      // if ((structure === undefined || structure === null) && creep.memory.fromStorage === false) {
-      //   structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-      //     filter: (s) => (s.structureType === STRUCTURE_STORAGE) &&
-      //       (s.store.energy < s.storeCapacity)
-      //   }) as StructureStorage
-      // }
-
-      // If there is something to deposit into then do so
-      if (structure !== null) {
-        console.log('hit again')
-        const creepTransfer = creep.transfer(structure, RESOURCE_ENERGY)
-        console.log('Status(' + creep.name + ') - transfer: ' + creepTransfer)
-        if (creepTransfer === ERR_NOT_IN_RANGE) {
-          if (!creep.fatigue) {
-            const moveRes = creep.travelTo(structure)
-            if (moveRes !== 0) {
-              console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-            }
-          }
-        }
-      }
+      RoleHelper.harvesterRole_Transfer(creep)
     } else {
       creep.memory.task = 'harvest'
       creep.say('H_H' + creep.carry.energy)
-      const storage = Game.spawns.Spawn1.room.storage
-      // If there is no storage fall back to harvesting sources
-      if (!storage || storage.store['energy'] === 0) {
-        const source: Source | null = creep.pos.findClosestByPath(FIND_SOURCES)
-        if (source !== null) {
-          const creepHarvest = creep.harvest(source)
-          // creep.memory.fromStorage = false
-          // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
-          if (creepHarvest === ERR_NOT_IN_RANGE) {
-            if (!creep.fatigue) {
-              const moveRes = creep.travelTo(source)
-              if (moveRes !== 0) {
-                console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-              }
-            }
-          }
-        }
-        // Otherwise, get energy from storage
-      } else {
-        const creepWithdraw = creep.withdraw(storage, RESOURCE_ENERGY)
-        // creep.memory.fromStorage = true
-        if (creepWithdraw === ERR_NOT_IN_RANGE) {
-          if (!creep.fatigue) {
-            const moveRes = creep.travelTo(storage)
-            if (moveRes !== 0) {
-              console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-            }
-          }
-        }
+      if(CreepHelper.getEnergy(creep) === RECIEVED_ENERGY) {
+        RoleHelper.harvesterRole_Transfer(creep)
       }
     }
   }
 
-  public static runAttacker (creep: Creep) {
+  private static runAttacker (creep: Creep) {
     const enemies = creep.room.find(FIND_HOSTILE_CREEPS)
     if (!Array.isArray(enemies) || enemies.length) {
       // console.log(enemies[0])
@@ -132,7 +129,7 @@ export class RoleManager {
     }
   }
 
-  public static runBuilder (creep: Creep) {
+  private static runBuilder (creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -157,43 +154,15 @@ export class RoleManager {
         }
       } else {
         this.runUpgrader(creep)
-        // roleHarvester.run(creep)
       }
     } else {
       creep.memory.task = 'harvest'
       creep.say('B_H' + creep.carry.energy)
-      const storage = Game.spawns.Spawn1.room.storage
-      // If there isn't storage then withdraw from sources
-      if (!storage || storage.store['energy'] === 0) {
-        const source: Source | null = creep.pos.findClosestByPath(FIND_SOURCES)
-        if (source !== null) {
-          const creepHarvest = creep.harvest(source)
-          // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
-          if (creepHarvest === ERR_NOT_IN_RANGE) {
-            if (!creep.fatigue) {
-              const moveRes = creep.travelTo(source)
-              if (moveRes !== 0) {
-                console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-              }
-            }
-          }
-        }
-      } else {
-        const creepWithdraw = creep.withdraw(storage, RESOURCE_ENERGY)
-        // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
-        if (creepWithdraw === ERR_NOT_IN_RANGE) {
-          if (!creep.fatigue) {
-            const moveRes = creep.travelTo(storage)
-            if (moveRes !== 0) {
-              console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-            }
-          }
-        }
-      }
+      CreepHelper.getEnergy(creep)
     }
   }
 
-  public static runUpgrader (creep: Creep) {
+  private static runUpgrader (creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -218,63 +187,11 @@ export class RoleManager {
     } else {
       creep.say('U_H' + creep.carry.energy)
       creep.memory.task = 'harvest'
-      const storage = Game.spawns.Spawn1.room.storage
-      // const storage = false
-      if (!storage) {
-        const source: Source | null = creep.pos.findClosestByPath(FIND_SOURCES)
-        if (source !== null) {
-          const creepHarvest = creep.harvest(source)
-          // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
-          if (creepHarvest === ERR_NOT_IN_RANGE) {
-            if (!creep.fatigue) {
-              const moveRes = creep.travelTo(source)
-              if (moveRes !== 0) {
-                console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-              }
-            }
-          }
-        }
-      } else {
-        const creepWithdraw = creep.withdraw(storage, RESOURCE_ENERGY)
-        // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
-        if (creepWithdraw === ERR_NOT_IN_RANGE) {
-          if (!creep.fatigue) {
-            const moveRes = creep.travelTo(storage)
-            if (moveRes !== 0) {
-              console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-            }
-          }
-        }
-      }
-      // // var source = creep.pos.findClosestByPath(FIND_SOURCES)
-      // var source
-
-      // const tombStone = creep.pos.findClosestByPath(FIND_RUINS, {
-      //   filter: (r) => r.store.energy !== 0
-      // })
-      // if (tombStone) {
-      //   source = tombStone
-      //   const creepWithdraw = creep.withdraw(tombStone, RESOURCE_ENERGY)
-      //   if (creepWithdraw === ERR_NOT_IN_RANGE && !creep.fatigue) {
-      //     creep.travelTo(tombStone)
-      //   }
-      // } else {
-      //   source = Game.spawns.Spawn1.room.storage
-      //   const creepHarvest = creep.withdraw(source, RESOURCE_ENERGY)
-      //   // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
-      //   if (creepHarvest === ERR_NOT_IN_RANGE) {
-      //     if (!creep.fatigue) {
-      //       const moveRes = creep.travelTo(source, { visualizePathStyle: {} })
-      //       if (moveRes !== 0) {
-      //         console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-      //       }
-      //     }
-      //   }
-      // }
+      CreepHelper.getEnergy(creep)
     }
   }
 
-  public static runRepairer (creep: Creep) {
+  private static runRepairer (creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -284,7 +201,7 @@ export class RoleManager {
       creep.memory.task = 'repair'
       creep.say('R_R' + creep.carry.energy)
       const structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (s) => s.hits < s.hitsMax && s.hits < 750000 // && s.structureType !== STRUCTURE_WALL
+        filter: (s) => s.hits < s.hitsMax - (creep.getActiveBodyparts(WORK)) * 100 && s.hits < 750000 // && s.structureType !== STRUCTURE_WALL
       })
       // console.log(structure)
       if (structure !== null) {
@@ -299,37 +216,11 @@ export class RoleManager {
     } else {
       creep.memory.task = 'harvest'
       creep.say('R_H' + creep.carry.energy)
-      const storage = Game.spawns.Spawn1.room.storage
-      if (!storage || storage.store['energy'] === 0) {
-        const source: Source | null = creep.pos.findClosestByPath(FIND_SOURCES)
-        if (source !== null) {
-          const creepHarvest = creep.harvest(source)
-          // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
-          if (creepHarvest === ERR_NOT_IN_RANGE) {
-            if (!creep.fatigue) {
-              const moveRes = creep.travelTo(source)
-              if (moveRes !== 0) {
-                console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-              }
-            }
-          }
-        }
-      } else {
-        const creepWithdraw = creep.withdraw(storage, RESOURCE_ENERGY)
-        // console.log("Status(" + creep.name + ") - harvest: " + creepHarvest)
-        if (creepWithdraw === ERR_NOT_IN_RANGE) {
-          if (!creep.fatigue) {
-            const moveRes = creep.travelTo(storage)
-            if (moveRes !== 0) {
-              console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
-            }
-          }
-        }
-      }
+      CreepHelper.getEnergy(creep)
     }
   }
 
-  public static runHauler (creep: Creep) {
+  private static runHauler (creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -371,7 +262,7 @@ export class RoleManager {
     }
   }
 
-  public static runPickupper (creep: Creep) {
+  private static runPickupper (creep: Creep) {
     if (creep.memory.working === true && creep.store.getUsedCapacity() === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.store.getFreeCapacity() === 0) {
@@ -516,7 +407,7 @@ export class RoleManager {
     // }
   }
 
-  public static runTraveller (creep: Creep) {
+  private static runTraveller (creep: Creep) {
     const target = Game.flags.investigate
     if (target) {
       // console.log(enemies[0])
