@@ -92,7 +92,7 @@ export class MemoryApi {
       return 0
     }
 
-    return _.sum(Memory.rooms[roomName].sources!.data!, (value: { id: string, numAccessTiles: number }) => value.numAccessTiles)
+    return _.sum(Memory.rooms[roomName].sources!.data! as SourceCacheData[], (value) => value.numAccessTiles)
   }
 
   public static getSourceIds(roomName: string): string[] {

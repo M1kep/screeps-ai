@@ -25,7 +25,7 @@ export class MemoryHelper {
       return
     }
 
-    Memory.rooms[roomName].creeps = {data: {}, cache: null}
+    Memory.rooms[roomName].creeps = {data: {}, cache: null} as Cache
 
     const creeps = _.filter(Game.creeps, (creep: Creep) => creep.memory.homeRoom === roomName)
 
@@ -33,7 +33,7 @@ export class MemoryHelper {
       return {
         id: creep.id
       }
-    })
+    }) as CreepCacheData[]
     Memory.rooms[roomName].creeps!.cache = Game.time
   }
 
@@ -43,7 +43,7 @@ export class MemoryHelper {
       return
     }
 
-    Memory.rooms[roomName].sources = {data: {}, cache: null} as SourceCache
+    Memory.rooms[roomName].sources = {data: {}, cache: null} as Cache
 
     const sources = Game.rooms[roomName].find(FIND_SOURCES)
     Memory.rooms[roomName].sources.data = _.map(sources, (source: Source) => {
@@ -52,7 +52,7 @@ export class MemoryHelper {
         numAccessTiles: RoomHelper.getNumAccessTilesForTarget(source),
         pos: source.pos
       }
-    }) as SourceData[]
+    })
     Memory.rooms[roomName].sources.cache = Game.time
   }
 
