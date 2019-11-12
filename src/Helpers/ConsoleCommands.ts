@@ -1,6 +1,7 @@
 import {MemoryApi} from "../API/MemoryApi";
 import {Traveler} from "../utils/Traveler/Traveler";
 import {PriorityQueue} from "../utils/Internal/Queue";
+import {CREEP_ROLE_MANAGERS} from "../utils/Internal/Interface_Constants";
 
 export class ConsoleCommands {
   public static init() {
@@ -15,6 +16,8 @@ export class ConsoleCommands {
     global.getSource = MemoryApi.getSources
     // @ts-ignore
     global.getNumTile = MemoryApi.getNumSourceAccessTiles
+    // @ts-ignore
+    global.stringMgr = JSON.stringify(CREEP_ROLE_MANAGERS)
   }
 
   private static getTravelPath(origin: RoomPosition | HasPos, destination: RoomPosition | HasPos, options: TravelToOptions = {}): PathfinderReturn {

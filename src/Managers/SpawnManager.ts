@@ -1,5 +1,12 @@
 import {SpawnApi} from '../API/SpawnApi'
 import {MemoryApi} from "../API/MemoryApi";
+import {
+  ROLE_BUILDER,
+  ROLE_HARVESTER,
+  ROLE_HAULER,
+  ROLE_MINER,
+  ROLE_REPAIRER, ROLE_UPGRADER
+} from "../utils/Internal/Constants";
 
 export class SpawnManager {
   public static handleSpawns() {
@@ -35,7 +42,7 @@ export class SpawnManager {
     // Get sources and determine if a miner needs to spawn.
     for (const source of sources) {
       // If there are not creeps assigned to source already
-      if (!_.some(Game.creeps, c => c.memory.role === 'miner' && c.memory.sourceId === source.id)) {
+      if (!_.some(Game.creeps, c => c.memory.role === ROLE_MINER && c.memory.sourceId === source.id)) {
         // Verify that there is a container for them.
         const containers = source.pos.findInRange(FIND_STRUCTURES, 1, {
           filter: s => s.structureType === STRUCTURE_CONTAINER
@@ -58,10 +65,10 @@ export class SpawnManager {
 
     for (const aContainer of containers) {
       // eslint-disable-next-line dot-notation
-      const assignedCreep = _.filter(myCreeps['hauler'], (c) => c.memory.containerId === aContainer.id)
+      const assignedCreep = _.filter(myCreeps[ROLE_HAULER], (c) => c.memory.containerId === aContainer.id)
       if (assignedCreep.length === 0) {
-        name = SpawnApi.createCustomCreep(spawn, 1300, 'hauler', [CARRY, CARRY, MOVE], {
-          role: 'hauler',
+        name = SpawnApi.createCustomCreep(spawn, 1300, ROLE_HAULER, [CARRY, CARRY, MOVE], {
+          role: ROLE_HAULER,
           working: false,
           containerId: aContainer.id
         })
@@ -76,9 +83,9 @@ export class SpawnManager {
     if (name === undefined) {
       switch (true) {
         case numberOfHarvesters < minHarvesters:
-          name = SpawnApi.createCustomCreep(spawn, energy, 'harvester', undefined, {homeRoom: spawn.room.name})
+          name = SpawnApi.createCustomCreep(spawn, energy, ROLE_HARVESTER, undefined, {homeRoom: spawn.room.name})
           if (name === ERR_NOT_ENOUGH_ENERGY) {
-            name = SpawnApi.createCustomCreep(spawn, spawn.room.energyAvailable, 'harvester', undefined, {homeRoom: Game.spawns.Spawn1.room.name})
+            name = SpawnApi.createCustomCreep(spawn, spawn.room.energyAvailable, ROLE_HARVESTER, undefined, {homeRoom: Game.spawns.Spawn1.room.name})
           }
           break
 
@@ -90,11 +97,11 @@ export class SpawnManager {
           break
 
         case numberOfRepairers < minRepairers:
-          name = SpawnApi.createCustomCreep(spawn, 1300, 'repairer')
+          name = SpawnApi.createCustomCreep(spawn, 1300, ROLE_REPAIRER)
           break
 
         case numberOfBuilders < minBuilders:
-          name = SpawnApi.createCustomCreep(spawn, 1300, 'builder')
+          name = SpawnApi.createCustomCreep(spawn, 1300, ROLE_BUILDER)
           break
 
         // FALL THROUGH IF NO FLAGS!
@@ -108,7 +115,7 @@ export class SpawnManager {
         //     break
         //   }
         case numberOfUpgraders < maxUpgraders:
-          name = SpawnApi.createCustomCreep(spawn, 15, 'upgrader')
+          name = SpawnApi.createCustomCreep(spawn, 15, ROLE_UPGRADER)
           break
       }
     }
