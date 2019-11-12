@@ -1,4 +1,4 @@
-import { SpawnHelper } from '../Helpers/SpawnHelper'
+import {SpawnHelper} from '../Helpers/SpawnHelper'
 import {ROOM_STATE_CREEP_LIMITS} from "../utils/Internal/Interface_Constants";
 import {MemoryHelper} from "../Helpers/MemoryHelper";
 
@@ -15,19 +15,20 @@ export class SpawnApi {
   }
 
   public static setCreepLimits(room: Room): void {
-    if(!room.memory.creepLimit) {
+    if (!room.memory.creepLimit) {
       throw new Error("No creep limits found")
     }
     MemoryHelper.updateLocalCreepLimits(room.name, this.generateLocalCreepLimits(room))
   }
-  public static createCustomCreep (spawn: StructureSpawn, energy: number, role: String, parts?: BodyPartConstant[], memory?: CreepMemory): ScreepsReturnCode | string {
+
+  public static createCustomCreep(spawn: StructureSpawn, energy: number, role: string, parts?: BodyPartConstant[], memory?: CreepMemory): ScreepsReturnCode | string {
     if (parts === undefined) {
       parts = [WORK, CARRY, MOVE]
     }
     const numParts = parts.length
     const partsCost = SpawnHelper.getSpawnCost(parts)
 
-    memory = { ...{ role: role, working: false, homeRoom: spawn.room.name }, ...memory } as CreepMemory
+    memory = {...{role: role, working: false, homeRoom: spawn.room.name}, ...memory} as CreepMemory
 
     const totalParts = Math.floor(energy / partsCost)
     const body: BodyPartConstant[] = []
@@ -44,7 +45,7 @@ export class SpawnApi {
     return spawn.createCreep(body, undefined, memory)
   }
 
-  public static createMiner (spawn: StructureSpawn, sourceId: string, containerId: string): ScreepsReturnCode | string {
+  public static createMiner(spawn: StructureSpawn, sourceId: string, containerId: string): ScreepsReturnCode | string {
     return spawn.createCreep([WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE], undefined, {
       role: 'miner',
       sourceId: sourceId,

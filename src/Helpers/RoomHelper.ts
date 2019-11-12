@@ -1,7 +1,7 @@
 import {MemoryApi} from "../API/MemoryApi";
 
 export class RoomHelper {
-  public static getNumAccessTilesForTarget (target: RoomObject): number {
+  public static getNumAccessTilesForTarget(target: RoomObject): number {
     let accessibleTiles = 0
     const roomTerrain: RoomTerrain = new Room.Terrain(target.pos.roomName)
     for (let y = target.pos.y - 1; y <= target.pos.y + 1; y++) {
@@ -17,7 +17,7 @@ export class RoomHelper {
     return accessibleTiles
   }
 
-  public static isOwner (room: Room) : Boolean {
+  public static isOwner(room: Room): boolean {
     if (room.controller !== undefined) {
       return room.controller.my
     } else {
@@ -25,11 +25,11 @@ export class RoomHelper {
     }
   }
 
-  public static doForAllRooms (task: Function) {
+  public static doForAllRooms(task: (room: Room) => any) {
     _.forEach(Game.rooms, (room: Room) => task(room))
   }
 
-  public static doForMyRooms (task: Function) {
+  public static doForMyRooms(task: (room: Room) => any) {
     const ownedRooms: Room[] = MemoryApi.getOwnedRooms()
     _.forEach(ownedRooms, (room: Room) => task(room))
   }

@@ -69,7 +69,7 @@ export class MemoryApi {
     if (Memory.rooms[roomName].sources!.data === null) {
       return []
     }
-    const sourceId: string[] = _.map((Memory.rooms[roomName].sources.data as SourceCacheData[]), src => src.id)
+    const sourceId: string[] = _.map(Memory.rooms[roomName].sources.data, "id")
 
     let sources: Source[] = MemoryHelper.getObjectsFromIds<Source>(sourceId)
 
@@ -92,7 +92,7 @@ export class MemoryApi {
       return 0
     }
 
-    return _.sum(Memory.rooms[roomName].sources!.data! as SourceCacheData[], (value) => value.numAccessTiles)
+    return _.sum(Memory.rooms[roomName].sources!.data!, "numAccessTiles")
   }
 
   public static getSourceIds(roomName: string): string[] {

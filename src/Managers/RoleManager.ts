@@ -1,14 +1,14 @@
-import { profile } from '../utils/Profiler/Profiler'
-import { CreepHelper } from '../Helpers/CreepHelper'
+import {profile} from '../utils/Profiler/Profiler'
+import {CreepHelper} from '../Helpers/CreepHelper'
 import {RoleHelper} from "../Helpers/RoleHelper";
 import {RECIEVED_ENERGY} from "../utils/Internal/Constants";
 
 @profile
 export class RoleManager {
-  public static handleRoles () {
+  public static handleRoles() {
     for (const name in Game.creeps) {
       const creep = Game.creeps[name]
-      if(creep.spawning) {
+      if (creep.spawning) {
         continue
       }
       switch (creep.memory.role) {
@@ -58,7 +58,7 @@ export class RoleManager {
     }
   }
 
-  private static runMiner (creep: Creep) {
+  private static runMiner(creep: Creep) {
     if (!creep.spawning) {
       /**
        * @type {Source}
@@ -95,7 +95,7 @@ export class RoleManager {
     }
   }
 
-  private static runHarvester (creep: Creep) {
+  private static runHarvester(creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -106,13 +106,13 @@ export class RoleManager {
     } else {
       creep.memory.task = 'harvest'
       creep.say('H_H' + creep.carry.energy)
-      if(CreepHelper.getEnergy(creep) === RECIEVED_ENERGY) {
+      if (CreepHelper.getEnergy(creep) === RECIEVED_ENERGY) {
         RoleHelper.harvesterRole_Transfer(creep)
       }
     }
   }
 
-  private static runAttacker (creep: Creep) {
+  private static runAttacker(creep: Creep) {
     const enemies = creep.room.find(FIND_HOSTILE_CREEPS)
     if (!Array.isArray(enemies) || enemies.length) {
       // console.log(enemies[0])
@@ -129,7 +129,7 @@ export class RoleManager {
     }
   }
 
-  private static runBuilder (creep: Creep) {
+  private static runBuilder(creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -162,7 +162,7 @@ export class RoleManager {
     }
   }
 
-  private static runUpgrader (creep: Creep) {
+  private static runUpgrader(creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -191,7 +191,7 @@ export class RoleManager {
     }
   }
 
-  private static runRepairer (creep: Creep) {
+  private static runRepairer(creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -220,7 +220,7 @@ export class RoleManager {
     }
   }
 
-  private static runHauler (creep: Creep) {
+  private static runHauler(creep: Creep) {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -262,7 +262,7 @@ export class RoleManager {
     }
   }
 
-  private static runPickupper (creep: Creep) {
+  private static runPickupper(creep: Creep) {
     if (creep.memory.working === true && creep.store.getUsedCapacity() === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.store.getFreeCapacity() === 0) {
@@ -407,7 +407,7 @@ export class RoleManager {
     // }
   }
 
-  private static runTraveller (creep: Creep) {
+  private static runTraveller(creep: Creep) {
     const target = Game.flags.investigate
     if (target) {
       // console.log(enemies[0])

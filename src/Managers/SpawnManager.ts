@@ -1,8 +1,8 @@
-import { SpawnApi } from '../API/SpawnApi'
+import {SpawnApi} from '../API/SpawnApi'
 import {MemoryApi} from "../API/MemoryApi";
 
 export class SpawnManager {
-  public static handleSpawns () {
+  public static handleSpawns() {
     for (const spawnName in Game.spawns) {
       const spawnObj = Game.spawns[spawnName]
       if (!spawnObj.spawning) {
@@ -11,7 +11,7 @@ export class SpawnManager {
     }
   }
 
-  private static doSpawn (spawn: StructureSpawn) {
+  private static doSpawn(spawn: StructureSpawn) {
     SpawnApi.setCreepLimits(spawn.room)
     const minHarvesters = 1
     const minBuilders = 3
@@ -76,9 +76,9 @@ export class SpawnManager {
     if (name === undefined) {
       switch (true) {
         case numberOfHarvesters < minHarvesters:
-          name = SpawnApi.createCustomCreep(spawn, energy, 'harvester', undefined, { homeRoom: spawn.room.name })
+          name = SpawnApi.createCustomCreep(spawn, energy, 'harvester', undefined, {homeRoom: spawn.room.name})
           if (name === ERR_NOT_ENOUGH_ENERGY) {
-            name = SpawnApi.createCustomCreep(spawn, spawn.room.energyAvailable, 'harvester', undefined, { homeRoom: Game.spawns.Spawn1.room.name })
+            name = SpawnApi.createCustomCreep(spawn, spawn.room.energyAvailable, 'harvester', undefined, {homeRoom: Game.spawns.Spawn1.room.name})
           }
           break
 

@@ -35,13 +35,13 @@ export class ConsoleCommands {
     // console.log(`Harvester:\t${numberOfHarvesters}\nUpgrader:\t${numberOfUpgraders}`)
   }
 
-  private static testQueue (iter: number) {
+  private static testQueue(iter: number) {
     let cpuA = Game.cpu.getUsed()
 
     let arr: any = [[]]
 
     let q = new PriorityQueue()
-    for(let i = 0; i < iter; i++) {
+    for (let i = 0; i < iter; i++) {
       arr[0].push(["Test", i])
       // q.push(["test", i])
     }
