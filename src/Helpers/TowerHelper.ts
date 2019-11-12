@@ -3,7 +3,7 @@ export class TowerHelper {
     let target: Creep | null = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
       filter: (c: Creep) => c.getActiveBodyparts(HEAL) > 0
     })
-    if(!target) {
+    if (!target) {
       target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
     }
 

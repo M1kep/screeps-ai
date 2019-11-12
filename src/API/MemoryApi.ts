@@ -1,7 +1,6 @@
 import {MYCREEPS_CACHE_TTL, SOURCE_CACHE_TTL, ROOM_STATE_RCL1} from '../utils/Internal/Constants'
 import {MemoryHelper} from '../Helpers/MemoryHelper'
 import {RoomHelper} from '../Helpers/RoomHelper'
-import stringify = Mocha.utils.stringify;
 
 export class MemoryApi {
   public static initRoomMemory(roomName: string, isOwnedRoom: boolean) {

@@ -1,7 +1,5 @@
 import {MemoryApi} from "../API/MemoryApi";
 import {Traveler} from "../utils/Traveler/Traveler";
-import {PriorityQueue} from "../utils/Internal/Queue";
-import {CREEP_ROLE_MANAGERS} from "../utils/Internal/Interface_Constants";
 
 export class ConsoleCommands {
   public static init() {
@@ -11,13 +9,9 @@ export class ConsoleCommands {
     // @ts-ignore
     global.getTravPath = this.getTravelPath
     // @ts-ignore
-    global.testQ = this.testQueue
-    // @ts-ignore
     global.getSource = MemoryApi.getSources
     // @ts-ignore
     global.getNumTile = MemoryApi.getNumSourceAccessTiles
-    // @ts-ignore
-    global.stringMgr = JSON.stringify(CREEP_ROLE_MANAGERS)
   }
 
   private static getTravelPath(origin: RoomPosition | HasPos, destination: RoomPosition | HasPos, options: TravelToOptions = {}): PathfinderReturn {
@@ -35,21 +29,5 @@ export class ConsoleCommands {
     for (const role in groupedCreeps) {
       console.log(`${role}:\t${groupedCreeps[role].length}`)
     }
-    // console.log(`Harvester:\t${numberOfHarvesters}\nUpgrader:\t${numberOfUpgraders}`)
-  }
-
-  private static testQueue(iter: number) {
-    let cpuA = Game.cpu.getUsed()
-
-    let arr: any = [[]]
-
-    let q = new PriorityQueue()
-    for (let i = 0; i < iter; i++) {
-      arr[0].push(["Test", i])
-      // q.push(["test", i])
-    }
-    // q.push(arr[0])
-    let cpuB = Game.cpu.getUsed()
-    console.log(cpuA - cpuB)
   }
 }

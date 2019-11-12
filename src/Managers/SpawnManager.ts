@@ -1,5 +1,3 @@
-import {SpawnApi} from '../API/SpawnApi'
-import {MemoryApi} from "../API/MemoryApi";
 import {
   ROLE_BUILDER,
   ROLE_HARVESTER,
@@ -7,6 +5,8 @@ import {
   ROLE_MINER,
   ROLE_REPAIRER, ROLE_UPGRADER
 } from "../utils/Internal/Constants";
+import {SpawnApi} from '../API/SpawnApi'
+import {MemoryApi} from "../API/MemoryApi";
 
 export class SpawnManager {
   public static handleSpawns() {
@@ -119,25 +119,6 @@ export class SpawnManager {
           break
       }
     }
-    //   if (numberOfHarvesters < minHarvesters) {
-    //     name = Game.spawns.Spawn1.createCustomCreep(energy, 'harvester', undefined, { home: Game.spawns.Spawn1.room.name })
-    //     if (name === ERR_NOT_ENOUGH_ENERGY) {
-    //       name = Game.spawns.Spawn1.createCustomCreep(Game.spawns.Spawn1.room.energyAvailable, 'harvester', undefined, { home: Game.spawns.Spawn1.room.name })
-    //     }
-    //   } else if (numberOfAttackers < minAttacker) {
-    //     name = Game.spawns.Spawn1.createCreep([ATTACK, MOVE, ATTACK, MOVE], undefined, {
-    //       role: 'attacker',
-    //       working: false
-    //     })
-    //   } else if (numberOfRepairers < minRepairers) {
-    //     name = Game.spawns.Spawn1.createCustomCreep(energy, 'repairer')
-    //     // console.log(name)
-    //   } else if (numberOfBuilders < minBuilders) {
-    //     name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder')
-    //   } else if (numberOfUpgraders < maxUpgraders) {
-    //     name = Game.spawns.Spawn1.createCustomCreep(energy, 'upgrader')
-    //   }
-    // }
 
     if (_.isString(name)) {
       console.log('Spawned new ' + Game.creeps[name].memory.role + ' creep: ' + name)

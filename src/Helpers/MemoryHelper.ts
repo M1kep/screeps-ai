@@ -2,7 +2,6 @@ import {RoomHelper} from './RoomHelper'
 
 export class MemoryHelper {
   public static getObjectsFromIds<T>(idArray: string[]): T[] {
-    // console.log("Array Length: " + idArray.length)
     if (idArray.length === 0) {
       return []
     }
@@ -10,7 +9,6 @@ export class MemoryHelper {
     const objects: T[] = []
 
     _.forEach(idArray, (id: string) => {
-      // console.log("ObjID: " + id)
       const object: T | null = Game.getObjectById(id)
       if (object !== null) {
         objects.push(object)

@@ -1,12 +1,12 @@
-import {SpawnHelper} from '../Helpers/SpawnHelper'
 import {ROOM_STATE_CREEP_LIMITS} from "../utils/Internal/Interface_Constants";
-import {MemoryHelper} from "../Helpers/MemoryHelper";
 import {ROLE_MINER} from "../utils/Internal/Constants";
+import {SpawnHelper} from '../Helpers/SpawnHelper'
+import {MemoryHelper} from "../Helpers/MemoryHelper";
 
 export class SpawnApi {
   private static generateLocalCreepLimits(room: Room): LocalCreepLimits {
     const roomState: RoomStateConstant = room.memory.roomState as RoomStateConstant;
-    if(roomState in ROOM_STATE_CREEP_LIMITS) {
+    if (roomState in ROOM_STATE_CREEP_LIMITS) {
       return ROOM_STATE_CREEP_LIMITS[roomState].generateLocalCreepLimits(room)
     }
     throw new Error("Unable to generate local limits - " + roomState)

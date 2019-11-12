@@ -3,20 +3,6 @@ export const MYCREEPS_CACHE_TTL = 20
 
 export const OWNER_USERNAME = 'M1kep'
 
-// type RoleConstant = ROLE_MINER |
-//   ROLE_PICKUPPER |
-//   ROLE_UPGRADER |
-//   ROLE_HAULER |
-//   ROLE_REPAIRER |
-//   ROLE_HARVESTER
-//
-// type ROLE_MINER = 'miner'
-// type ROLE_PICKUPPER = 'pickupper'
-// type ROLE_UPGRADER = 'upgrader'
-// type ROLE_HAULER = 'hauler'
-// type ROLE_REPAIRER = 'repairer'
-// type ROLE_HARVESTER = 'harvester'
-
 export const ROOM_STATE_RCL1 = "RCL1"
 export const ROOM_STATE_RCL2 = "RCL2"
 export const ROOM_STATE_RCL3 = "RCL3"
