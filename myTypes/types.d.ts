@@ -13,6 +13,7 @@ interface CreepMemory {
   fromStorage?: boolean
   targetRoom?: string
 }
+
 // declare const RECIEVED_ENERGY = 1
 // declare const MOVED_TO_ENERGY_SOURCE = 0
 
@@ -30,29 +31,19 @@ interface Memory {
 
 interface RoomMemory {
   creepLimit: CreepLimits
-
   sources: Cache
-
   creeps?: Cache
-
   roomState: RoomStateConstant
 }
 
 interface LocalCreepLimits {
   [index: string]: number
-
   miner: number
-
   harvester: number
-
   hauler: number
-
   upgrader: number
-
   repairer: number
-
   pickupper: number
-
 }
 
 interface CreepLimits {
@@ -73,11 +64,6 @@ interface Cache {
 
 type CacheData = SourceCacheData |
   CreepCacheData
-// interface SourceCache {
-//   data: SourceData[]
-//
-//   cache: number | null
-// }
 
 interface CreepCacheData {
   id: string,
@@ -88,41 +74,15 @@ interface SourceCacheData {
   numAccessTiles: number
   pos: RoomPosition
 }
-// interface SourceCache {
-//
-//   data: {
-//     id: string,
-//     numAccessTiles: number
-//   }
-//
-//   cache: number | null
-// }
 
-// interface SourceData {
-//   id: string
-//
-//   numAccessTiles: number
-// }
-//endregion
-
-//region Room Types
-declare const ROOM_STATE_RCL1 = 1
-declare const ROOM_STATE_RCL2 = 2
-declare const ROOM_STATE_RCL3 = 3
-declare const ROOM_STATE_RCL4 = 4
-declare const ROOM_STATE_RCL5 = 5
-declare const ROOM_STATE_RCL6 = 6
-declare const ROOM_STATE_RCL7 = 7
-declare const ROOM_STATE_RCL8 = 8
-
-type ROOM_STATE_RCL1 = 1
-type ROOM_STATE_RCL2 = 2
-type ROOM_STATE_RCL3 = 3
-type ROOM_STATE_RCL4 = 4
-type ROOM_STATE_RCL5 = 5
-type ROOM_STATE_RCL6 = 6
-type ROOM_STATE_RCL7 = 7
-type ROOM_STATE_RCL8 = 8
+type ROOM_STATE_RCL1 = "RCL1"
+type ROOM_STATE_RCL2 = "RCL2"
+type ROOM_STATE_RCL3 = "RCL3"
+type ROOM_STATE_RCL4 = "RCL4"
+type ROOM_STATE_RCL5 = "RCL5"
+type ROOM_STATE_RCL6 = "RCL6"
+type ROOM_STATE_RCL7 = "RCL7"
+type ROOM_STATE_RCL8 = "RCL8"
 
 type RoomStateConstant = ROOM_STATE_RCL1 |
   ROOM_STATE_RCL2 |
@@ -133,3 +93,8 @@ type RoomStateConstant = ROOM_STATE_RCL1 |
   ROOM_STATE_RCL7 |
   ROOM_STATE_RCL8
 //endregion
+
+//region Role Types
+type ROLE_UPGRADER = "upgrader"
+type ROLE_REPAIRER = "repairer"
+//ednregion

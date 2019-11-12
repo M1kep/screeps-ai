@@ -5,13 +5,10 @@ import {MemoryHelper} from "../Helpers/MemoryHelper";
 export class SpawnApi {
   private static generateLocalCreepLimits(room: Room): LocalCreepLimits {
     const roomState: RoomStateConstant = room.memory.roomState as RoomStateConstant;
-    for (const index in ROOM_STATE_CREEP_LIMITS) {
-      if (ROOM_STATE_CREEP_LIMITS[index].roomState === roomState) {
-        return ROOM_STATE_CREEP_LIMITS[index].generateLocalCreepLimits(room);
-      }
+    if(roomState in ROOM_STATE_CREEP_LIMITS) {
+      return ROOM_STATE_CREEP_LIMITS[roomState].generateLocalCreepLimits(room)
     }
-
-    throw new Error("Unable to generate local limits")
+    throw new Error("Unable to generate local limits - " + roomState)
   }
 
   public static setCreepLimits(room: Room): void {
