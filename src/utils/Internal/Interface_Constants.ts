@@ -1,10 +1,10 @@
 import {
   ROLE_ATTACKER,
-  ROLE_BUILDER,
+  ROLE_BUILDER, ROLE_CLAIMER,
   ROLE_HARVESTER,
   ROLE_HAULER,
   ROLE_MINER,
-  ROLE_PICKUPPER,
+  ROLE_PICKUPPER, ROLE_REMOTEMINER,
   ROLE_REPAIRER,
   ROLE_TRAVELLER,
   ROLE_UPGRADER,
@@ -32,25 +32,31 @@ import {RoleMiner} from "../../Helpers/Roles/RoleMiner";
 import {RoleHauler} from "../../Helpers/Roles/RoleHauler";
 import {RoleBuilder} from "../../Helpers/Roles/RoleBuilder";
 import {RoleAttacker} from "../../Helpers/Roles/RoleAttacker";
+import {RoleClaimer} from "../../Helpers/Roles/RoleClaimer";
+import {RoleRemoteMiner} from "../../Helpers/Roles/RoleRemoteMiner";
 
 
-export const ROOM_STATE_CREEP_LIMITS: { [index: string]: CreepSpawnLimits } = {}
-ROOM_STATE_CREEP_LIMITS[ROOM_STATE_RCL1] = new RCL1CreepLimit()
-ROOM_STATE_CREEP_LIMITS[ROOM_STATE_RCL2] = new RCL2CreepLimit()
-ROOM_STATE_CREEP_LIMITS[ROOM_STATE_RCL3] = new RCL3CreepLimit()
-ROOM_STATE_CREEP_LIMITS[ROOM_STATE_RCL4] = new RCL4CreepLimit()
-ROOM_STATE_CREEP_LIMITS[ROOM_STATE_RCL5] = new RCL5CreepLimit()
-ROOM_STATE_CREEP_LIMITS[ROOM_STATE_RCL6] = new RCL6CreepLimit()
-ROOM_STATE_CREEP_LIMITS[ROOM_STATE_RCL7] = new RCL7CreepLimit()
-ROOM_STATE_CREEP_LIMITS[ROOM_STATE_RCL8] = new RCL8CreepLimit()
+export const ROOM_STATE_CREEP_LIMITS: { [index: string]: CreepSpawnLimits } = {
+  [ROOM_STATE_RCL1]: new RCL1CreepLimit(),
+  [ROOM_STATE_RCL2]: new RCL2CreepLimit(),
+  [ROOM_STATE_RCL3]: new RCL3CreepLimit(),
+  [ROOM_STATE_RCL4]: new RCL4CreepLimit(),
+  [ROOM_STATE_RCL5]: new RCL5CreepLimit(),
+  [ROOM_STATE_RCL6]: new RCL6CreepLimit(),
+  [ROOM_STATE_RCL7]: new RCL7CreepLimit(),
+  [ROOM_STATE_RCL8]: new RCL8CreepLimit(),
+}
 
-export const CREEP_ROLE_MANAGERS: { [index: string]: CreepRoleManager } = {}
-CREEP_ROLE_MANAGERS[ROLE_UPGRADER] = new RoleUpgrader()
-CREEP_ROLE_MANAGERS[ROLE_TRAVELLER] = new RoleTraveller()
-CREEP_ROLE_MANAGERS[ROLE_REPAIRER] = new RoleRepairer()
-CREEP_ROLE_MANAGERS[ROLE_PICKUPPER] = new RolePickupper()
-CREEP_ROLE_MANAGERS[ROLE_MINER] = new RoleMiner()
-CREEP_ROLE_MANAGERS[ROLE_HAULER] = new RoleHauler()
-CREEP_ROLE_MANAGERS[ROLE_HARVESTER] = new RoleHarvester()
-CREEP_ROLE_MANAGERS[ROLE_BUILDER] = new RoleBuilder()
-CREEP_ROLE_MANAGERS[ROLE_ATTACKER] = new RoleAttacker()
+export const CREEP_ROLE_MANAGERS: { [index: string]: CreepRoleManager } = {
+  [ROLE_UPGRADER]: new RoleUpgrader(),
+  [ROLE_TRAVELLER]: new RoleTraveller(),
+  [ROLE_REPAIRER]: new RoleRepairer(),
+  [ROLE_PICKUPPER]: new RolePickupper(),
+  [ROLE_MINER]: new RoleMiner(),
+  [ROLE_HAULER]: new RoleHauler(),
+  [ROLE_HARVESTER]: new RoleHarvester(),
+  [ROLE_BUILDER]: new RoleBuilder(),
+  [ROLE_ATTACKER]: new RoleAttacker(),
+  [ROLE_CLAIMER]: new RoleClaimer(),
+  [ROLE_REMOTEMINER]: new RoleRemoteMiner()
+}

@@ -5,8 +5,13 @@ export class MemoryManager {
   public static runMemoryManager() {
     this.initMainMemory()
 
-    RoomHelper.doForMyRooms((room: Room) => {
+    RoomHelper.doForOwnedRooms((room: Room) => {
       const isOwnedRoom: boolean = true
+      MemoryApi.initRoomMemory(room.name, isOwnedRoom)
+    })
+
+    RoomHelper.doForUnOwnedRooms((room: Room) => {
+      const isOwnedRoom: boolean = false
       MemoryApi.initRoomMemory(room.name, isOwnedRoom)
     })
   }

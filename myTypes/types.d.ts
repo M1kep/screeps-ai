@@ -27,10 +27,11 @@ interface Memory {
 }
 
 interface RoomMemory {
-  creepLimit: CreepLimits
+  creepLimit?: CreepLimits
   sources: Cache
   creeps?: Cache
-  roomState: RoomStateConstant
+  roomState?: RoomStateConstant
+  dependentRooms?: string[]
 }
 
 interface LocalCreepLimits {
@@ -103,6 +104,8 @@ type ROLE_TRAVELLER = "traveller"
 type ROLE_PICKUPPER = "pickupper"
 type ROLE_MINER = "miner"
 type ROLE_HAULER = "hauler"
+type ROLE_CLAIMER = "claimer"
+type ROLE_REMOTEMINER = "r_miner"
 
 type RoleConstant = ROLE_HARVESTER |
   ROLE_UPGRADER |
@@ -112,5 +115,7 @@ type RoleConstant = ROLE_HARVESTER |
   ROLE_TRAVELLER |
   ROLE_PICKUPPER |
   ROLE_MINER |
-  ROLE_HAULER
+  ROLE_HAULER |
+  ROLE_CLAIMER |
+  ROLE_REMOTEMINER
 //ednregion

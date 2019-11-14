@@ -19,7 +19,12 @@ export class RoleBuilder implements CreepRoleManager {
       if (constructionSite !== null) {
         const creepBuild = creep.build(constructionSite)
         // console.log("Status(" + creep.name + ") - transfer: " + creepBuild + " - " + constructionSite.pos.x + ":" + constructionSite.pos.y)
-        if (creepBuild === ERR_NOT_IN_RANGE) {
+        if (creepBuild === ERR_NOT_IN_RANGE ||
+            creep.pos.x > constructionSite.pos.x + 1 ||
+            creep.pos.x < constructionSite.pos.x - 1 ||
+            creep.pos.y > constructionSite.pos.y + 1 ||
+            creep.pos.y < constructionSite.pos.y - 1
+        ) {
           if (!creep.fatigue) {
             const moveRes = creep.travelTo(constructionSite)
             if (moveRes !== 0) {

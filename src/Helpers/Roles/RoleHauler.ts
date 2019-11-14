@@ -2,7 +2,7 @@ import {ROLE_HAULER} from "../../utils/Internal/Constants";
 
 export class RoleHauler implements CreepRoleManager {
   name: RoleConstant = ROLE_HAULER;
-  run: (creep: Creep) => void = (creep => {
+  run: (creep: Creep) => void = creep => {
     if (creep.memory.working === true && creep.carry.energy === 0) {
       creep.memory.working = false
     } else if (creep.memory.working === false && creep.carry.energy === creep.carryCapacity) {
@@ -12,14 +12,15 @@ export class RoleHauler implements CreepRoleManager {
     if (creep.memory.working) {
       creep.say('🚚', true)
       creep.memory.task = 'deposit'
+      const creepHomeRoom = Game.rooms[creep.memory!.homeRoom!]
       // Attempt to transfer energy to storage
-      if (creep.room.storage === undefined) {
-        throw new Error('creep.room.storage is undefined')
+      if (creepHomeRoom.storage === undefined) {
+        throw new Error('Creep homeRoom storage is undefined')
       }
-      const creepTransfer = creep.transfer(creep.room.storage, RESOURCE_ENERGY)
+      const creepTransfer = creep.transfer(creepHomeRoom.storage, RESOURCE_ENERGY)
       if (creepTransfer === ERR_NOT_IN_RANGE) {
         if (!creep.fatigue) {
-          const moveRes = creep.travelTo(creep.room.storage)
+          const moveRes = creep.travelTo(creepHomeRoom.storage)
           if (moveRes !== 0) {
             console.log('Error(' + creep.name + '): Move Error - ' + moveRes)
           }
@@ -42,6 +43,5 @@ export class RoleHauler implements CreepRoleManager {
         }
       }
     }
-  });
-
+  };
 }

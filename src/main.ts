@@ -16,6 +16,10 @@ import './utils/Internal/RoomVisual'
 global.Profiler = Profiler.init()
 ConsoleCommands.init()
 export const loop = ErrorMapper.wrapLoop(() => {
+  // let a = Game.cpu.getUsed()
+  // let tmp = !Memory.stats
+  // let b = Game.cpu.getUsed()
+  // console.log("Memory took : " + (b - a))
   if (Game.time % 15 === 0) {
     for (const i in Memory.creeps) {
       if (!Game.creeps[i]) {

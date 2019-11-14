@@ -8,9 +8,9 @@ export class RoleTraveller implements CreepRoleManager {
       // console.log(enemies[0])
       // console.log('X: ' + enemies[0].pos.x + '| Y: ' + enemies[0].pos.y)
       creep.travelTo(target)
-    } else if (Game.flags.traveler_wait) {
+    } else if (Game.flags.traveller_wait) {
       // console.log('test')
-      creep.travelTo(Game.flags.traveler_wait)
+      creep.travelTo(Game.flags.traveller_wait)
     }
   });
 }

@@ -3,7 +3,7 @@ import {RoomApi} from "../API/RoomApi";
 
 export class RoomManager {
   public static runRoomManager() {
-    RoomHelper.doForMyRooms((room: Room) => {
+    RoomHelper.doForOwnedRooms((room: Room) => {
       this.manageRoom(room)
     })
   }

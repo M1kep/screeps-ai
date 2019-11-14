@@ -3,6 +3,7 @@ import {MemoryHelper} from '../Helpers/MemoryHelper'
 import {RoomHelper} from '../Helpers/RoomHelper'
 
 export class MemoryApi {
+
   public static initRoomMemory(roomName: string, isOwnedRoom: boolean) {
     if (Memory.rooms[roomName]) {
       return
@@ -21,8 +22,13 @@ export class MemoryApi {
           }
         },
         roomState: ROOM_STATE_RCL1,
-        sources: {data: {}, cache: null} as Cache,
-        creeps: {data: {}, cache: null} as Cache
+        sources: {data: [], cache: null},
+        creeps: {data: [], cache: null},
+        dependentRooms: []
+      }
+    } else {
+      Memory.rooms[roomName] = {
+        sources: {data: [], cache: null}
       }
     }
 
@@ -95,6 +101,9 @@ export class MemoryApi {
   }
 
   public static getSourceIds(roomName: string): string[] {
+    if(Memory.rooms[roomName]?.sources?.data === undefined) {
+      return []
+    }
     return _.map(Memory.rooms[roomName].sources.data, (sourceMemory: StringMap) => sourceMemory.id)
   }
 
@@ -104,5 +113,59 @@ export class MemoryApi {
 
   public static getOwnedRooms(): Room[] {
     return _.filter(Game.rooms, (room: Room) => RoomHelper.isOwner(room))
+  }
+
+  public static getUnOwnedRooms(): Room[] {
+    return _.filter(Game.rooms, (room: Room) => !RoomHelper.isOwner(room))
+  }
+
+  public static getDependentRoomNames(roomName: string): string[] {
+    MemoryHelper.checkIfRoomExistsInMemory(roomName)
+    return Memory.rooms[roomName].dependentRooms!
+  }
+
+  public static addDependentRoom(roomName: string, dependentRoomName: string, forceAdd?: boolean) {
+    if(roomName === dependentRoomName) {
+      console.log(`WARN: Cannot add dependentRoomName(${dependentRoomName}) as dependent to roomName${roomName})`)
+    }
+    MemoryHelper.checkIfRoomExistsInMemory(roomName)
+
+    if(!Game.rooms[dependentRoomName] && !Memory.rooms[roomName]) {
+      console.log(`WARN: dependentRoomName(${dependentRoomName}) not visible. ${forceAdd ? '' : 'Use the forceAdd option to bypass.'}`)
+      if(!forceAdd) return
+    }
+    if(Game.rooms[dependentRoomName] && RoomHelper.isOwner(Game.rooms[dependentRoomName])) {
+      console.log(`WARN: Cannot add owned room as a dependent.`)
+      return
+    }
+
+    if(Memory.rooms[roomName].dependentRooms!.includes(dependentRoomName)) {
+      console.log(`WARN: ${dependentRoomName} is already a dependent of ${roomName}`)
+      return
+    }
+
+    Memory.rooms[roomName].dependentRooms!.push(dependentRoomName)
+  }
+
+  public static removeDependentRoom(roomName: string, dependentRoomName: string) {
+    MemoryHelper.checkIfRoomExistsInMemory(roomName)
+
+    const index = Memory.rooms[roomName].dependentRooms!.indexOf(dependentRoomName, 0);
+    if (index > -1) {
+      Memory.rooms[roomName].dependentRooms!.splice(index, 1);
+    } else {
+      console.log(`WARN: dependentRoomName(${dependentRoomName}) not in Memory.rooms[${roomName}].dependentRooms`)
+    }
+  }
+
+  public static getDependentRoomSourceIds(roomName: string, dependentRoom?: string): string[] {
+    MemoryHelper.checkIfRoomExistsInMemory(roomName)
+
+    let dependentRooms: string[] = dependentRoom ? [dependentRoom] : this.getDependentRoomNames(roomName)
+    let sourceList: string[] = []
+    for(let depRoomName of dependentRooms) {
+      sourceList.push(...this.getSourceIds(depRoomName))
+    }
+    return sourceList
   }
 }

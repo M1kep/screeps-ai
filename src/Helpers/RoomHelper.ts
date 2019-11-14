@@ -18,7 +18,7 @@ export class RoomHelper {
   }
 
   public static isOwner(room: Room): boolean {
-    if (room.controller !== undefined) {
+    if (room?.controller !== undefined) {
       return room.controller.my
     } else {
       return false
@@ -29,9 +29,13 @@ export class RoomHelper {
     _.forEach(Game.rooms, (room: Room) => task(room))
   }
 
-  public static doForMyRooms(task: (room: Room) => any) {
+  public static doForOwnedRooms(task: (room: Room) => any) {
     const ownedRooms: Room[] = MemoryApi.getOwnedRooms()
     _.forEach(ownedRooms, (room: Room) => task(room))
   }
 
+  public static doForUnOwnedRooms(task: (room: Room) => any) {
+    const ownedRooms: Room[] = MemoryApi.getUnOwnedRooms()
+    _.forEach(ownedRooms, (room: Room) => task(room))
+  }
 }

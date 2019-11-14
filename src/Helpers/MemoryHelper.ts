@@ -57,4 +57,22 @@ export class MemoryHelper {
   public static updateLocalCreepLimits(roomName: string, creepLimits: LocalCreepLimits) {
     Memory.rooms[roomName].creepLimit!.localCreepLimit = creepLimits
   }
+
+  public static checkIfRoomExistsInMemory(roomName: string, isDependentRoom?: boolean): void {
+    // TODO: Better output
+    if (!isDependentRoom ? (Game.rooms[roomName] === undefined || !RoomHelper.isOwner(Game.rooms[roomName])) : false) {
+      console.log(`DEBUG: !isDependentRoom(${!isDependentRoom}). Game.rooms[roomName](${Game.rooms[roomName]}). RoomHelper.isOwner(Game.rooms[roomName])${RoomHelper.isOwner(Game.rooms[roomName])}`)
+      console.log(`DEBUG: !isDependentRoom ? (Game.rooms[roomName] !== undefined || RoomHelper.isOwner(Game.rooms[roomName])) : false | ${!isDependentRoom ? (Game.rooms[roomName] !== undefined || RoomHelper.isOwner(Game.rooms[roomName])) : false}`)
+      throw new Error(`Unable to locate room(${roomName}). A dependent room can only be attached to an owned room.`)
+    }
+
+    if (Memory.rooms[roomName] === undefined) {
+      throw new Error("Unable to locate room data for room: " + roomName)
+    }
+
+    if (!isDependentRoom && !Memory.rooms[roomName].dependentRooms) {
+      Memory.rooms[roomName].dependentRooms = []
+      console.log("WARN: dependentRooms is undefined for room: " + roomName + ". Initializing array.")
+    }
+  }
 }

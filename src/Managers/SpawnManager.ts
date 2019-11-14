@@ -3,7 +3,7 @@ import {
   ROLE_HARVESTER,
   ROLE_HAULER,
   ROLE_MINER,
-  ROLE_REPAIRER, ROLE_UPGRADER
+  ROLE_REPAIRER, ROLE_TRAVELLER, ROLE_UPGRADER
 } from "../utils/Internal/Constants";
 import {SpawnApi} from '../API/SpawnApi'
 import {MemoryApi} from "../API/MemoryApi";
@@ -21,7 +21,7 @@ export class SpawnManager {
   private static doSpawn(spawn: StructureSpawn) {
     SpawnApi.setCreepLimits(spawn.room)
     const minHarvesters = 1
-    const minBuilders = 3
+    const minBuilders = 2
     const minRepairers = 2
     const maxUpgraders = 1
     const minAttacker = 1
@@ -32,6 +32,7 @@ export class SpawnManager {
     const numberOfBuilders = myCreeps.builder ? myCreeps.builder.length : 0
     const numberOfRepairers = myCreeps.repairer ? myCreeps.repairer.length : 0
     const numberOfAttackers = myCreeps.attacker ? myCreeps.attacker.length : 0
+    const numberOfTravellers = myCreeps.traveller ? myCreeps.traveller.length : 0
     // eslint-disable-next-line dot-notation
     // const numberOfPickuppers = myCreeps['pickupper'] ? myCreeps['pickupper'].length : 0
 
@@ -114,8 +115,13 @@ export class SpawnManager {
         //     name = Game.spawns.Spawn1.createCustomCreep(1300, 'pickupper', [MOVE, CARRY], { targetRoom: pickupFlags[0].pos.roomName })
         //     break
         //   }
+
+        case Game.flags["traveller_wait"] !== undefined && numberOfTravellers !== 1:
+          name = SpawnApi.createCustomCreep(spawn, 50, ROLE_TRAVELLER, [MOVE])
+          break
+
         case numberOfUpgraders < maxUpgraders:
-          name = SpawnApi.createCustomCreep(spawn, 15, ROLE_UPGRADER)
+          name = SpawnApi.createCustomCreep(spawn, 1500, ROLE_UPGRADER)
           break
       }
     }

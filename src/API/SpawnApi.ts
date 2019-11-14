@@ -26,7 +26,12 @@ export class SpawnApi {
     const numParts = parts.length
     const partsCost = SpawnHelper.getSpawnCost(parts)
 
-    memory = {...{role: role, working: false, homeRoom: spawn.room.name}, ...memory} as CreepMemory
+    memory = {...{role: role,
+        working: false,
+        homeRoom: spawn.room.name
+      },
+      ...memory
+    } as CreepMemory
 
     const totalParts = Math.floor(energy / partsCost)
     const body: BodyPartConstant[] = []
@@ -47,7 +52,8 @@ export class SpawnApi {
     return spawn.createCreep([WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE], undefined, {
       role: ROLE_MINER,
       sourceId: sourceId,
-      containerId: containerId
+      containerId: containerId,
+      homeRoom: spawn.room.name
     })
   }
 }
